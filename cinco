@@ -51,8 +51,8 @@ local function highlightPlayer(player)
     highlight.OutlineColor = Color3.new(1, 0, 0) -- Red outline
     highlight.Filled = false -- Only outline
 
-    -- Optional: Remove highlight when player leaves
-    player.CharacterRemoving:Connect(function()
+    -- Keep highlighting until the game ends
+    game.Ended:Connect(function()
         highlight:Destroy()
     end)
 end
@@ -62,3 +62,56 @@ Players.PlayerAdded:Connect(highlightPlayer)
 for _, player in pairs(Players:GetPlayers()) do
     highlightPlayer(player)
 end
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Create a remote event for client-side effects
+local bulletHitEvent = ReplicatedStorage:WaitForChild("BulletHitEvent") or Instance.new("RemoteEvent")
+bulletHitEvent.Name = "BulletHitEvent"
+
+-- Function to handle bullet hits with looping
+local function handleBulletHit(hitInfo)
+    local player = Players:GetPlayerFromCharacter(hitInfo.Parent)
+    if player then
+        -- Create a beam or trail effect from the bullet's origin to the hit point
+        local beam = Instance.new("Beam")
+        beam.Parent = workspace
+        beam.Color = Color3.new(1, 0, 0) -- Red beam
+        beam.Texture = "rbxasset://textures/beam/bright"
+        beam.Start = hitInfo.p
+        beam.End = hitInfo.Position
+
+        -- Add a looping effect to the beam
+        local loopInterval = 0.5 -- Seconds between loops
+        local loopTimer = 0
+        game:GetService("RunService").Heartbeat:Connect(function(dt)
+            loopTimer = loopTimer + dt
+            if loopTimer >= loopInterval then
+                loopTimer = loopTimer - loopInterval
+                beam.End = hitInfo.Position
+            end
+        end)
+
+        -- Add a timer to destroy the beam after a certain duration
+        local beamLifetime = 2 -- Seconds
+        game:GetService("RunService").Heartbeat:Connect(function(dt)
+            beamLifetime = beamLifetime - dt
+            if beamLifetime <= 0 then
+                beam:Destroy()
+            end
+        end)
+
+        -- Trigger the remote event on the client
+        bulletHitEvent:FireClient(player, hitInfo.Position)
+    end
+end
+
+-- Example: Handle bullet hits from a weapon
+local weapon = -- Your weapon object here
+weapon.Shoot:Connect(function()
+    local bullet = -- Create your bullet object here
+    bullet.Hit:Connect(handleBulletHit)
+end)
+
+
