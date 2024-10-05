@@ -1,1 +1,31 @@
-local player = game.Players.LocalPlayer local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))() local Window = OrionLib:MakeWindow({Name = "ᴀʀsᴇɴᴀʟ ʜᴀᴄᴋs ʙʏ ᴄɪɴᴄᴏ", HidePremium = false, SaveConfig = true, ConfigFolder = "ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ"}) --[[ Name = - The name of the UI. HidePremium = - Whether or not the user details shows Premium status or not. SaveConfig = - Toggles the config saving in the UI. ConfigFolder = - The name of the folder where the configs are saved. IntroEnabled = false - Whether or not to show the intro animation. IntroText = - Text to show in the intro animation. IntroIcon = - URL to the image you want to use in the intro animation. Icon = - URL to the image you want displayed on the window. CloseCallback = - Function to execute when the window is closed. ]] local Tab = Window:MakeTab({ Name = "ᴘʟᴀʏᴇʀ sᴇᴛᴛɪɴɢs", Icon = "rbxassetid://4483345998", PremiumOnly = false }) --[[ Name = - The name of the tab. Icon = - The icon of the tab. PremiumOnly = - Makes the tab accessible to Sirus Premium users only. ]] local Section = Tab:AddSection({ Name = "LocalPlayer" }) --[[ Name = - The name of the section. ]] OrionLib:MakeNotification({ Name = "Welcome!", Content = "ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ", Image = "rbxassetid://4483345998", Time = 5 }) --[[ Title = - The title of the notification. Content = - The content of the notification. Image = - The icon of the notification. Time = - The duration of the notfication. ]] Tab:AddButton({ Name = "ᴀɪᴍʙᴏᴛ", Callback = function() player.Character.Humanoid.WalkSpeed = 500 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ᴇsᴘ ʙᴏx", Callback = function() player.Character.Humanoid.JumpPower = 100 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ғᴀsᴛ sʜᴏᴛ", Callback = function() game.Workspace.Gravity = 10 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] --[[ Name = - The name of the button. Callback = - The function of the button. ]]
+local player = game.Players.LocalPlayer local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))() local Window = OrionLib:MakeWindow({Name = "ᴀʀsᴇɴᴀʟ ʜᴀᴄᴋs ʙʏ ᴄɪɴᴄᴏ", HidePremium = false, SaveConfig = true, ConfigFolder = "ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ"}) --[[ Name = - The name of the UI. HidePremium = - Whether or not the user details shows Premium status or not. SaveConfig = - Toggles the config saving in the UI. ConfigFolder = - The name of the folder where the configs are saved. IntroEnabled = false - Whether or not to show the intro animation. IntroText = - Text to show in the intro animation. IntroIcon = - URL to the image you want to use in the intro animation. Icon = - URL to the image you want displayed on the window. CloseCallback = - Function to execute when the window is closed. ]] local Tab = Window:MakeTab({ Name = "ᴘʟᴀʏᴇʀ sᴇᴛᴛɪɴɢs", Icon = "rbxassetid://4483345998", PremiumOnly = false }) --[[ Name = - The name of the tab. Icon = - The icon of the tab. PremiumOnly = - Makes the tab accessible to Sirus Premium users only. ]] local Section = Tab:AddSection({ Name = "LocalPlayer" }) --[[ Name = - The name of the section. ]] OrionLib:MakeNotification({ Name = "Welcome!", Content = "ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ", Image = "rbxassetid://4483345998", Time = 5 }) --[[ Title = - The title of the notification. Content = - The content of the notification. Image = - The icon of the notification. Time = - The duration of the notfication. ]] Tab:AddButton({ Name = "ᴡᴀʟᴋsᴘᴇᴇx", Callback = function() player.Character.Humanoid.WalkSpeed = 40 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ᴇsᴘ ʙᴏx", Callback = function() local Players = game:GetService("Players")
+
+-- Function to place a box on a player's body
+local function placeBox(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Create a box part
+    local box = Instance.new("Part")
+    box.Parent = character
+    box.Size = Vector3.new(1, 1, 1) -- Adjust the size as needed
+    box.BrickColor = BrickColor.Red()
+    box.CanCollide = false -- Prevent collisions
+
+    -- Attach the box to the humanoid root part using a Weld
+    local weld = Instance.new("Weld")
+    weld.Parent = humanoidRootPart
+    weld.Part0 = humanoidRootPart
+    weld.Part1 = box
+
+    -- Keep the box until the game ends
+    game.Ended:Connect(function()
+        box:Destroy()
+    end)
+end
+
+-- Place a box on all players on join or rejoin
+Players.PlayerAdded:Connect(placeBox)
+for _, player in pairs(Players:GetPlayers()) do
+    placeBox(player)
+end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ғᴀsᴛ sʜᴏᴛ", Callback = function() game.Workspace.Gravity = 10 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] --[[ Name = - The name of the button. Callback = - The function of the button. ]]
