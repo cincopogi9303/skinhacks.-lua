@@ -1,0 +1,59 @@
+-- Script to display a text label above player's head
+-- Place this in a LocalScript inside StarterPlayerScripts
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Function to create the BillboardGui
+local function createTextLabel(character)
+    local head = character:FindFirstChild("Head") -- Find the player's head
+    if head then
+        -- Create a BillboardGui
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "PlayerLabel"
+        billboardGui.Adornee = head -- Attach it to the head
+        billboardGui.Size = UDim2.new(0, 200, 0, 50) -- Set the size of the text box
+        billboardGui.StudsOffset = Vector3.new(0, 2, 0) -- Offset the text above the head
+        billboardGui.AlwaysOnTop = true
+
+        -- Create the text label
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Parent = billboardGui
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = player.Name -- Set the text to the player's name
+        textLabel.TextColor3 = Color3.new(1, 1, 1) -- Set the text color (white)
+        textLabel.TextScaled = true -- Scale the text to fit
+
+        -- Parent the BillboardGui to the player's head
+        billboardGui.Parent = head
+    end
+end
+
+-- Ensure the text label is created when the character spawns
+player.CharacterAdded:Connect(function(character)
+    createTextLabel(character)
+end)
+
+-- For an existing character, create the label immediately
+if player.Character then
+    createTextLabel(player.Character)
+end
+
+
+local Players = game:GetService("Players")
+
+-- Function to highlight a player
+local function highlightPlayer(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = character
+    highlight.OutlineColor = Color3.new(1, 0, 0) -- Red outline
+    highlight.Filled = false -- Only outline
+end
+
+-- Highlight all players on join or rejoin
+Players.PlayerAdded:Connect(highlightPlayer)
+for _, player in pairs(Players:GetPlayers()) do
+    highlightPlayer(player)
+end
