@@ -1,4 +1,4 @@
-local player = game.Players.LocalPlayer local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))() local Window = OrionLib:MakeWindow({Name = "ᴀʀsᴇɴᴀʟ ʜᴀᴄᴋs ʙʏ ᴄɪɴᴄᴏ", HidePremium = false, SaveConfig = true, ConfigFolder = "ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ"}) --[[ Name = - The name of the UI. HidePremium = - Whether or not the user details shows Premium status or not. SaveConfig = - Toggles the config saving in the UI. ConfigFolder = - The name of the folder where the configs are saved. IntroEnabled = false - Whether or not to show the intro animation. IntroText = - Text to show in the intro animation. IntroIcon = - URL to the image you want to use in the intro animation. Icon = - URL to the image you want displayed on the window. CloseCallback = - Function to execute when the window is closed. ]] local Tab = Window:MakeTab({ Name = "ᴘʟᴀʏᴇʀ sᴇᴛᴛɪɴɢs", Icon = "rbxassetid://4483345998", PremiumOnly = false }) --[[ Name = - The name of the tab. Icon = - The icon of the tab. PremiumOnly = - Makes the tab accessible to Sirus Premium users only. ]] local Section = Tab:AddSection({ Name = "LocalPlayer" }) --[[ Name = - The name of the section. ]] OrionLib:MakeNotification({ Name = "Welcome!", Content = "ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴄɪɴᴄᴏ's ᴀʀsᴇɴᴀʟ sᴄʀɪᴘᴛ", Image = "rbxassetid://4483345998", Time = 5 }) --[[ Title = - The title of the notification. Content = - The content of the notification. Image = - The icon of the notification. Time = - The duration of the notfication. ]] Tab:AddButton({ Name = "ᴡᴀʟᴋsᴘᴇᴇx", Callback = function() player.Character.Humanoid.WalkSpeed = 40 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ᴇsᴘ ʙᴏx", Callback = function() local Players = game:GetService("Players")
+local Players = game:GetService("Players")
 
 -- Function to place a box on a player's body
 local function placeBox(player)
@@ -28,4 +28,76 @@ end
 Players.PlayerAdded:Connect(placeBox)
 for _, player in pairs(Players:GetPlayers()) do
     placeBox(player)
-end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] Tab:AddButton({ Name = "ғᴀsᴛ sʜᴏᴛ", Callback = function() game.Workspace.Gravity = 10 end }) --[[ Name = - The name of the button. Callback = - The function of the button. ]] --[[ Name = - The name of the button. Callback = - The function of the button. ]]
+end
+
+local Players = game:GetService("Players")
+
+-- Function to lock the camera to the player's head
+local function lockCamera(player)
+    player.CharacterAdded:Connect(function(character)
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.CameraMaxZoom = 0
+        humanoid.CameraMinZoom = 0
+        humanoid.CameraMode = Enum.CameraMode.Fixed
+
+        -- Keep the camera locked until the game ends
+        game.Ended:Connect(function()
+            humanoid.CameraMaxZoom = nil
+            humanoid.CameraMinZoom = nil
+            humanoid.CameraMode = Enum.CameraMode.Classic
+        end)
+    end)
+end
+
+-- Lock the camera for all players on join or rejoin
+Players.PlayerAdded:Connect(lockCamera)
+for _, player in pairs(Players:GetPlayers()) do
+    lockCamera(player)
+end
+
+local Players = game:GetService("Players")
+
+-- Function to highlight a player
+local function highlightPlayer(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = character
+    highlight.OutlineColor = Color3.new(1, 0, 0) -- Red outline
+    highlight.Filled = false -- Only outline
+
+    -- Keep highlighting until the game ends
+    game.Ended:Connect(function()
+        highlight:Destroy()
+    end)
+end
+
+-- Highlight all players on join or rejoin
+Players.PlayerAdded:Connect(highlightPlayer)
+for _, player in pairs(Players:GetPlayers()) do
+    highlightPlayer(player)
+end
+
+local Players = game:GetService("Players")
+
+-- Function to increase walk speed
+local function increaseWalkSpeed(player, multiplier)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    -- Calculate the new walk speed
+    local newWalkSpeed = humanoid.WalkSpeed * multiplier
+    humanoid.WalkSpeed = newWalkSpeed
+
+    -- Restore original walk speed when the player leaves the game
+    player.CharacterRemoving:Connect(function()
+        humanoid.WalkSpeed = humanoid.WalkSpeed / multiplier
+    end)
+end
+
+-- Increase walk speed for all players on join or rejoin
+Players.PlayerAdded:Connect(function(player)
+    increaseWalkSpeed(player, 1.4) -- Increase walk speed by 40%
+end)
+for _, player in pairs(Players:GetPlayers()) do
+    increaseWalkSpeed(player, 1.4)
+end
